@@ -1,0 +1,82 @@
+-- --------------------------------------------------------
+-- SCRIPT SQL PARA CRIAÇÃO DE BANCO DE DADOS E TABELA DE VENDAS DE MEDICAMENTOS
+-- E INSERÇÃO DE DADOS A PARTIR DO ARQUIVO CSV.
+-- --------------------------------------------------------
+
+-- PASSO 1: Criar o banco de dados (se ele não existir)
+-- Você pode mudar 'farmacia_db' para o nome que desejar para seu banco de dados.
+CREATE DATABASE IF NOT EXISTS farmacia_db;
+
+-- PASSO 2: Usar o banco de dados recém-criado (ou existente)
+USE farmacia_db;
+
+-- PASSO 3: Criar a tabela 'VendasMedicamentos'
+-- Se a tabela já existir, ela será removida e recriada para garantir um estado limpo.
+-- CUIDADO: DROP TABLE IF EXISTS apaga todos os dados existentes na tabela!
+DROP TABLE IF EXISTS VendasMedicamentos;
+
+CREATE TABLE VendasMedicamentos (
+    DataVenda DATE NOT NULL,
+    IDVenda INT PRIMARY KEY, -- Assumindo que IDVenda é único e a chave primária
+    Produto VARCHAR(255) NOT NULL,
+    Categoria VARCHAR(100),
+    Quantidade INT NOT NULL,
+    PrecoUnitario DECIMAL(10, 2) NOT NULL,
+    ValorTotal DECIMAL(10, 2) NOT NULL,
+    Cliente VARCHAR(255),
+    MetodoPagamento VARCHAR(50),
+    Status VARCHAR(50)
+);
+
+-- PASSO 4: Inserir os registros na tabela 'VendasMedicamentos'
+INSERT INTO VendasMedicamentos (DataVenda, IDVenda, Produto, Categoria, Quantidade, PrecoUnitario, ValorTotal, Cliente, MetodoPagamento, Status) VALUES
+('2023-01-01', 1, 'Paracetamol', 'Analgésicos', 2, 10.50, 21.00, 'João Silva', 'Cartão de Crédito', 'Concluída'),
+('2023-01-01', 2, 'Amoxicilina', 'Antibióticos', 1, 35.00, 35.00, 'Maria Souza', 'Dinheiro', 'Concluída'),
+('2023-01-02', 3, 'Omeprazol', 'Gastrointestinais', 1, 22.75, 22.75, 'Carlos Lima', 'Cartão de Débito', 'Concluída'),
+('2023-01-02', 4, 'Dipirona', 'Analgésicos', 3, 8.90, 26.70, 'Ana Paula', 'Pix', 'Concluída'),
+('2023-01-03', 5, 'Vitamina C', 'Suplementos', 2, 15.00, 30.00, 'Pedro Alves', 'Cartão de Crédito', 'Concluída'),
+('2023-01-03', 6, 'Aspirina', 'Anti-inflamatórios', 1, 12.00, 12.00, 'Lucia Santos', 'Dinheiro', 'Concluída'),
+('2023-01-04', 7, 'Pantoprazol', 'Gastrointestinais', 1, 28.50, 28.50, 'Fernando Costa', 'Cartão de Débito', 'Concluída'),
+('2023-01-04', 8, 'Ibuprofeno', 'Anti-inflamatórios', 2, 18.20, 36.40, 'Mariana Gomes', 'Pix', 'Concluída'),
+('2023-01-05', 9, 'Clonazepam', 'Psicotrópicos', 1, 45.00, 45.00, 'Roberto Pereira', 'Cartão de Crédito', 'Pendente'),
+('2023-01-05', 10, 'Sinvastatina', 'Cardiovasculares', 1, 60.00, 60.00, 'Camila Rocha', 'Dinheiro', 'Concluída'),
+('2023-01-06', 11, 'Dorflex', 'Analgésicos', 2, 9.50, 19.00, 'André Dias', 'Cartão de Débito', 'Concluída'),
+('2023-01-06', 12, 'Ciprofloxacino', 'Antibióticos', 1, 40.00, 40.00, 'Beatriz Martins', 'Pix', 'Concluída'),
+('2023-01-07', 13, 'Losartana', 'Cardiovasculares', 1, 55.00, 55.00, 'Gustavo Fernandes', 'Cartão de Crédito', 'Concluída'),
+('2023-01-07', 14, 'Allegra', 'Antialérgicos', 1, 30.00, 30.00, 'Patrícia Oliveira', 'Dinheiro', 'Concluída'),
+('2023-01-08', 15, 'Buscopan', 'Gastrointestinais', 2, 11.00, 22.00, 'Felipe Souza', 'Cartão de Débito', 'Concluída'),
+('2023-01-08', 16, 'Novalgina', 'Analgésicos', 1, 13.50, 13.50, 'Isabela Costa', 'Pix', 'Concluída'),
+('2023-01-09', 17, 'Nimesulida', 'Anti-inflamatórios', 1, 20.00, 20.00, 'Diego Santos', 'Cartão de Crédito', 'Concluída'),
+('2023-01-09', 18, 'Desloratadina', 'Antialérgicos', 1, 25.00, 25.00, 'Laura Almeida', 'Dinheiro', 'Concluída'),
+('2023-01-10', 19, 'Sertralina', 'Psicotrópicos', 1, 70.00, 70.00, 'Gabriel Miranda', 'Cartão de Débito', 'Concluída'),
+('2023-01-10', 20, 'Atorvastatina', 'Cardiovasculares', 1, 65.00, 65.00, 'Sofia Carvalho', 'Pix', 'Concluída'),
+('2023-01-11', 21, 'Neosaldina', 'Analgésicos', 2, 14.00, 28.00, 'Lucas Rocha', 'Cartão de Crédito', 'Concluída'),
+('2023-01-11', 22, 'Cefalexina', 'Antibióticos', 1, 42.00, 42.00, 'Helena Vieira', 'Dinheiro', 'Concluída'),
+('2023-01-12', 23, 'Loratadina', 'Antialérgicos', 1, 18.00, 18.00, 'Enzo Nogueira', 'Cartão de Débito', 'Concluída'),
+('2023-01-12', 24, 'Rivotril', 'Psicotrópicos', 1, 50.00, 50.00, 'Manuela Lima', 'Pix', 'Pendente'),
+('2023-01-13', 25, 'Vick Vaporub', 'Respiratórios', 1, 12.50, 12.50, 'Valentina Pires', 'Cartão de Crédito', 'Concluída'),
+('2023-01-13', 26, 'Propranolol', 'Cardiovasculares', 1, 48.00, 48.00, 'Arthur Costa', 'Dinheiro', 'Concluída'),
+('2023-01-14', 27, 'Fluoxetina', 'Psicotrópicos', 1, 58.00, 58.00, 'Julia Dias', 'Cartão de Débito', 'Concluída'),
+('2023-01-14', 28, 'Engov', 'Analgésicos', 1, 7.50, 7.50, 'Guilherme Neves', 'Pix', 'Concluída'),
+('2023-01-15', 29, 'Xarope para Tosse', 'Respiratórios', 1, 20.00, 20.00, 'Maria Eduarda', 'Cartão de Crédito', 'Concluída'),
+('2023-01-15', 30, 'Captopril', 'Cardiovasculares', 1, 40.00, 40.00, 'João Pedro', 'Dinheiro', 'Concluída'),
+('2023-01-16', 31, 'Doril', 'Analgésicos', 2, 9.00, 18.00, 'Sofia Farias', 'Cartão de Débito', 'Concluída'),
+('2023-01-16', 32, 'Dramin', 'Antieméticos', 1, 16.00, 16.00, 'Rafael Alves', 'Pix', 'Concluída'),
+('2023-01-17', 33, 'Enalapril', 'Cardiovasculares', 1, 52.00, 52.00, 'Giovanna Xavier', 'Cartão de Crédito', 'Concluída'),
+('2023-01-17', 34, 'Tylenol', 'Analgésicos', 1, 11.50, 11.50, 'Miguel Castro', 'Dinheiro', 'Concluída'),
+('2023-01-18', 35, 'Valium', 'Psicotrópicos', 1, 65.00, 65.00, 'Livia Silveira', 'Cartão de Débito', 'Pendente'),
+('2023-01-18', 36, 'Busonid', 'Respiratórios', 1, 32.00, 32.00, 'Daniel Rocha', 'Pix', 'Concluída'),
+('2023-01-19', 37, 'Advil', 'Anti-inflamatórios', 1, 19.00, 19.00, 'Alice Nunes', 'Cartão de Crédito', 'Concluída'),
+('2023-01-19', 38, 'Gaviscon', 'Gastrointestinais', 1, 23.00, 23.00, 'Matheus Pinho', 'Dinheiro', 'Concluída'),
+('2023-01-20', 39, 'Epocler', 'Hepatoprotetores', 1, 10.00, 10.00, 'Laura Mendes', 'Cartão de Débito', 'Concluída'),
+('2023-01-20', 40, 'Rinosoro', 'Respiratórios', 1, 8.00, 8.00, 'Heitor Barreto', 'Pix', 'Concluída'),
+('2023-01-21', 41, 'Lexapro', 'Psicotrópicos', 1, 75.00, 75.00, 'Sophia Correia', 'Cartão de Crédito', 'Concluída'),
+('2023-01-21', 42, 'Benegrip', 'Antigripais', 2, 13.00, 26.00, 'Davi Alves', 'Dinheiro', 'Concluída'),
+('2023-01-22', 43, 'Plasil', 'Antieméticos', 1, 14.50, 14.50, 'Lorena Ribeiro', 'Cartão de Débito', 'Concluída'),
+('2023-01-22', 44, 'Selozok', 'Cardiovasculares', 1, 68.00, 68.00, 'Pedro Henrique', 'Pix', 'Concluída'),
+('2023-01-23', 45, 'AAS', 'Anti-inflamatórios', 3, 5.00, 15.00, 'Helena Fontes', 'Cartão de Crédito', 'Concluída'),
+('2023-01-23', 46, 'Clavulin', 'Antibióticos', 1, 55.00, 55.00, 'Théo Lima', 'Dinheiro', 'Concluída'),
+('2023-01-24', 47, 'Histamin', 'Antialérgicos', 1, 17.00, 17.00, 'Lara Souza', 'Cartão de Débito', 'Concluída'),
+('2023-01-24', 48, 'Bromoprida', 'Gastrointestinais', 1, 21.00, 21.00, 'Catarina Martins', 'Pix', 'Concluída'),
+('2023-01-25', 49, 'Dorflex Max', 'Analgésicos', 1, 16.50, 16.50, 'Isaque Borges', 'Cartão de Crédito', 'Concluída'),
+('2023-01-25', 50, 'Tamiflu', 'Antivirais', 1, 90.00, 90.00, 'Clara Ferreira', 'Dinheiro', 'Pendente');

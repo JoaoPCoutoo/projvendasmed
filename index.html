@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendas de Medicamentos - Cadastro e Visualização</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        h1, h2 { color: #0056b3; text-align: center; }
+        #main-container { max-width: 1200px; margin: auto; }
+        .form-container, #sales-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px; }
+        .form-container h2 { margin-top: 0; }
+        form label { display: block; margin-bottom: 5px; font-weight: bold; }
+        form input, form select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        form button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        form button:hover { background-color: #0056b3; }
+        #form-message { text-align: center; margin-top: 10px; font-weight: bold; }
+        #sales-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #007bff; color: white; position: sticky; top: 0; z-index: 1; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .loading-message, .error-message { text-align: center; font-style: italic; color: #666; }
+        .error-message { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="main-container">
+        <h1>Vendas de Medicamentos</h1>
+
+        <div class="form-container">
+            <h2>Adicionar Nova Venda</h2>
+            <form id="addSaleForm">
+                <label for="DataVenda">Data da Venda:</label>
+                <input type="date" id="DataVenda" name="DataVenda" required>
+
+                <label for="Produto">Produto:</label>
+                <input type="text" id="Produto" name="Produto" required>
+
+                <label for="Categoria">Categoria:</label>
+                <input type="text" id="Categoria" name="Categoria">
+
+                <label for="Quantidade">Quantidade:</label>
+                <input type="number" id="Quantidade" name="Quantidade" min="1" required>
+
+                <label for="PrecoUnitario">Preço Unitário:</label>
+                <input type="number" id="PrecoUnitario" name="PrecoUnitario" step="0.01" min="0.01" required>
+
+                <label for="Cliente">Cliente:</label>
+                <input type="text" id="Cliente" name="Cliente">
+
+                <label for="MetodoPagamento">Método de Pagamento:</label>
+                <input type="text" id="MetodoPagamento" name="MetodoPagamento">
+
+                <label for="Status">Status:</label>
+                <select id="Status" name="Status">
+                    <option value="Concluída">Concluída</option>
+                    <option value="Pendente">Pendente</option>
+                </select>
+                
+                <button type="submit">Cadastrar Venda</button>
+            </form>
+            <div id="form-message"></div>
+        </div>
+
+        <div id="sales-container">
+            <h2>Registros de Vendas</h2>
+            <p class="loading-message">Carregando dados das vendas...</p>
+            <div id="sales-table-container">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Função para carregar os dados das vendas na tabela
+            function loadSalesData() {
+                $.ajax({
+                    url: 'get_vendas.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#sales-table-container').html('<p class="loading-message">Buscando dados...</p>');
+                    },
+                    success: function(data) {
+                        if (data.error) {
+                            $('#sales-table-container').html('<p class="error-message">Erro ao carregar dados: ' + data.error + '</p>');
+                            return;
+                        }
+
+                        if (data.length > 0) {
+                            var tableHtml = '<table><thead><tr>';
+                            $.each(data[0], function(key, value) {
+                                tableHtml += '<th>' + key.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); }) + '</th>';
+                            });
+                            tableHtml += '</tr></thead><tbody>';
+
+                            $.each(data, function(index, venda) {
+                                tableHtml += '<tr>';
+                                $.each(venda, function(key, value) {
+                                    tableHtml += '<td>' + value + '</td>';
+                                });
+                                tableHtml += '</tr>';
+                            });
+
+                            tableHtml += '</tbody></table>';
+                            $('#sales-table-container').html(tableHtml);
+                        } else {
+                            $('#sales-table-container').html('<p>Nenhum dado de venda encontrado.</p>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#sales-table-container').html('<p class="error-message">Erro na requisição AJAX: ' + status + ' - ' + error + '</p>');
+                        console.error("Erro na requisição AJAX:", status, error, xhr);
+                    },
+                    complete: function() {
+                        $('.loading-message').remove();
+                    }
+                });
+            }
+
+            // Ação do formulário
+            $('#addSaleForm').on('submit', function(e) {
+                e.preventDefault(); // Impede o envio tradicional do formulário
+
+                // Faz a requisição AJAX para enviar os dados
+                $.ajax({
+                    url: 'add_venda.php', // O novo script PHP para adicionar vendas
+                    type: 'POST',
+                    dataType: 'json',
+                    data: $(this).serialize(), // Pega todos os dados do formulário e os serializa
+                    beforeSend: function() {
+                        $('#form-message').text('Cadastrando...');
+                        $('button[type="submit"]').prop('disabled', true); // Desativa o botão
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#form-message').text('Venda adicionada com sucesso!').css('color', 'green');
+                            $('#addSaleForm')[0].reset(); // Limpa o formulário
+                            loadSalesData(); // Recarrega a tabela para mostrar o novo registro
+                        } else {
+                            $('#form-message').text('Erro: ' + response.message).css('color', 'red');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#form-message').text('Erro ao comunicar com o servidor.').css('color', 'red');
+                        console.error("Erro na requisição AJAX do formulário:", status, error, xhr);
+                    },
+                    complete: function() {
+                        $('button[type="submit"]').prop('disabled', false); // Reativa o botão
+                    }
+                });
+            });
+
+            // Carrega os dados iniciais ao abrir a página
+            loadSalesData();
+        });
+    </script>
+</body>
+</html>
